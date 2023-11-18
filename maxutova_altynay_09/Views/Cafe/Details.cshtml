@@ -77,6 +77,27 @@
     AllComment();
     AllGallery();
     GetRating();
+    IfUserFirstComment();
+    
+ function IfUserFirstComment() {
+            $.ajax({
+            url: '@Url.Action("FirsComment", "Cafe")',
+            type: 'GET',
+            data: {idCafe: @Model.Id},
+            dataType: 'json',
+            success: function (data) {
+            console.log(data);
+            if (data === false) {
+              $('#newRest').hide();
+              $('.deleteComment').show();
+              } else {
+              $('#newRest').show();
+              $('.deleteComment').hide();
+          }           
+            },
+            });
+    }                       
+
     
        function AllComment() {
                 $.ajax({
@@ -110,7 +131,6 @@
             }
     
 
-            
             function AllGallery() {
                             $.ajax({
                                 url: '@Url.Action("AllGallery", "Cafe")',
@@ -190,6 +210,7 @@
                                AllComment();
                                AllGallery();
                                GetRating();
+                               IfUserFirstComment();
                            }
                        });
                    });   
@@ -202,11 +223,13 @@
                                    data: { id: commentId },
                                    dataType: 'json',
                                    success: function (data) {
+                                       
                                    },
                                    error: function (xhr, status, error) {
                                    },
                                    complete: function () {
                                     AllComment();
+                                    IfUserFirstComment();
                                    }
                                });
                            });

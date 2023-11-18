@@ -96,8 +96,10 @@ public class CafeController : Controller
     [HttpPost]
     public async Task<IActionResult> AddNewReview(CreateRestView model)
     {
+        
         if (model.Comment != null && model.CafeId !=null)
         {
+            
             Review review = new Review
             {
                 Comment = model.Comment,
@@ -193,5 +195,18 @@ public class CafeController : Controller
         {
             return NotFound($"User with ID {id} not found");
         }
+    }
+
+    [HttpGet]
+    public IActionResult FirsComment(int idCafe)
+    {
+        string IdLogiinUser = _userManager.GetUserId(User);
+        var tryFindReview = _context.Reviews.Where(r => r.CafeId == idCafe).FirstOrDefault(r => r.UserId == IdLogiinUser);
+        if (tryFindReview is not null)
+        {
+            return Json(false);
+        }
+
+        return Json(true);
     }
 }
