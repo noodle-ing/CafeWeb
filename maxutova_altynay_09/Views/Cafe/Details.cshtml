@@ -235,9 +235,10 @@ function AllComment() {
                                    error: function (xhr, status, error) {
                                    },
                                    complete: function () {
-                                    AllComment();
-                                    IfUserFirstComment();
-                                    GetRating();
+                                        AllComment();
+                                        AllGallery();
+                                        GetRating();
+                                        IfUserFirstComment();
                                    }
                                });
                            });
