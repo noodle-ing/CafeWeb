@@ -1,0 +1,29 @@
+@model Cafe
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+
+<h2>@Model.Name</h2>
+
+<div class="d-inline-flex">
+    <div class="col-6">
+        @Model.Description
+    </div>
+    
+    <div class="col-6">
+        <img src="@Model.CafePhoto" alt="RestImage" class="card-img-top" style="max-width: 100%; height: auto;">
+    </div>
+</div>
+
+<h2>Gallery</h2>
+@foreach (var photo in @Model.Gallery)
+{
+    <img src="@photo" alt="RestImage" class="card-img-top" style="max-width: 100%; height: auto;">
+}
+
+<h2>Rating : @Model.Rating</h2>
+
+<h2>Reviews</h2>
+

@@ -68,7 +68,25 @@ public class CafeController : Controller
             PageViewModel = pageViewModel,
             Cafes = items
         };
-        
         return View(viewModel);
     }
+
+    [HttpGet]
+    public IActionResult Details(int cafeId)
+    {
+        if (cafeId.ToString() is null)
+            return BadRequest();
+
+        Cafe cafe = _context.Cafes.FirstOrDefault(c => c.Id == cafeId);
+        if (cafe is not null)
+        {
+            List<Photo> gallery = new List<Photo>();
+            gallery = _context.Photos.Where(p => p.CafeId == cafe.Id).ToList();
+            cafe.Gallery = gallery;
+            return View(cafe);
+        }
+
+        return BadRequest();
+    }
+    
 }

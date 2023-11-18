@@ -182,6 +182,28 @@ namespace maxutova_altynay_09.Migrations
                     b.ToTable("Cafes");
                 });
 
+            modelBuilder.Entity("maxutova_altynay_09.Models.Photo", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CafeId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("PhotoPath")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CafeId");
+
+                    b.ToTable("Photos");
+                });
+
             modelBuilder.Entity("maxutova_altynay_09.Models.Review", b =>
                 {
                     b.Property<int>("Id")
@@ -330,6 +352,17 @@ namespace maxutova_altynay_09.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("maxutova_altynay_09.Models.Photo", b =>
+                {
+                    b.HasOne("maxutova_altynay_09.Models.Cafe", "Cafe")
+                        .WithMany("Gallery")
+                        .HasForeignKey("CafeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Cafe");
+                });
+
             modelBuilder.Entity("maxutova_altynay_09.Models.Review", b =>
                 {
                     b.HasOne("maxutova_altynay_09.Models.Cafe", null)
@@ -339,6 +372,8 @@ namespace maxutova_altynay_09.Migrations
 
             modelBuilder.Entity("maxutova_altynay_09.Models.Cafe", b =>
                 {
+                    b.Navigation("Gallery");
+
                     b.Navigation("Reviews");
                 });
 #pragma warning restore 612, 618

@@ -9,6 +9,7 @@ public class CafeContext : IdentityDbContext<User>
     public DbSet<User> Users { get; set; }
     public DbSet<Cafe> Cafes { get; set; }
     public DbSet<Review> Reviews { get; set; }
+    public DbSet<Photo> Photos { get; set; }
 
     public CafeContext(DbContextOptions options) : base(options)
     {
