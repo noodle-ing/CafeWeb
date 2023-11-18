@@ -165,7 +165,6 @@ public class CafeController : Controller
         int sumRev = reviews.Sum(r => r.Rate);
         int numRev = reviews.Count();
         Cafe cafe = _context.Cafes.FirstOrDefault(c => c.Id == cafeId);
-
         if (numRev > 0)
         {
             cafe.Rating = Math.Round((double)sumRev / numRev, 1); 
@@ -174,7 +173,6 @@ public class CafeController : Controller
         {
             cafe.Rating = 0; 
         }
-
         double rating = cafe.Rating;
         _context.Cafes.Update(cafe);
         _context.SaveChanges();
