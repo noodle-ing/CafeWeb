@@ -4,6 +4,7 @@ using maxutova_altynay_09.Services;
 using maxutova_altynay_09.ViewModels.Cafe;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace maxutova_altynay_09.Controllers;
 
@@ -55,9 +56,19 @@ public class CafeController : Controller
     }
 
     [HttpGet]
-    public IActionResult AllCafe()
+    public async Task<IActionResult> AllCafe(int page = 1)
     {
-        List<Cafe> cafes = _context.Cafes.ToList();
-        return View(cafes);
+        int pageSize = 10;
+        IQueryable<Cafe> cafes = _context.Cafes;
+        var count = await cafes.CountAsync();
+        var items = await cafes.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+        PageViewModel pageViewModel = new PageViewModel(count, page, pageSize);
+        CafeIndexViewModel viewModel = new CafeIndexViewModel
+        {
+            PageViewModel = pageViewModel,
+            Cafes = items
+        };
+        
+        return View(viewModel);
     }
 }
