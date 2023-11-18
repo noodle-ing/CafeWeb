@@ -13,7 +13,7 @@ builder.Services.AddControllersWithViews().AddJsonOptions(o =>
     o.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
 });
 string connection = builder.Configuration.GetConnectionString("DefaultConnection")!;
-builder.Services.AddDbContext<DefaultContext>(o => o.UseNpgsql(connection))
+builder.Services.AddDbContext<CafeContext>(o => o.UseNpgsql(connection))
     .ConfigureApplicationCookie(o =>
     {
         o.AccessDeniedPath = "/Account/Login";
@@ -24,9 +24,10 @@ builder.Services.AddDbContext<DefaultContext>(o => o.UseNpgsql(connection))
         opt.Password.RequiredLength = 7;
         opt.Password.RequiredUniqueChars = 2;
     })
-    .AddEntityFrameworkStores<DefaultContext>();
+    .AddEntityFrameworkStores<CafeContext>();
 
 builder.Services.AddTransient<AccountService>();
+builder.Services.AddTransient<CafeService>();
 builder.Services.AddTransient<UploadFileService>();
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
@@ -55,6 +56,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Cafe}/{action=AllCafe}");
 
 app.Run();

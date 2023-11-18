@@ -3,22 +3,20 @@ using maxutova_altynay_09.Extensions.Maping;
 using maxutova_altynay_09.Models;
 using maxutova_altynay_09.Services;
 using maxutova_altynay_09.ViewModels.Account;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 
-namespace FoodShop.Controllers;
+namespace maxutova_altynay_09.Controllers;
 
 public class AccountController : Controller
 {
     private readonly SignInManager<User> _signInManager;
-    private readonly DefaultContext _context;
+    private readonly CafeContext _context;
     private readonly UserManager<User> _userManager;
     private readonly AccountService _accountService;
 
-    public AccountController(SignInManager<User> signInManager, DefaultContext context, UserManager<User> userManager, AccountService accountService)
+    public AccountController(SignInManager<User> signInManager, CafeContext context, UserManager<User> userManager, AccountService accountService)
     {
         _signInManager = signInManager;
         _context = context;
@@ -54,7 +52,7 @@ public class AccountController : Controller
         if (!result)
             return BadRequest();
         
-        return RedirectToAction("Index", "Home");
+        return RedirectToAction("AllCafe", "Cafe");
     }
     
     [HttpGet]
@@ -71,7 +69,7 @@ public class AccountController : Controller
         if (user is not null)
         {
             await _signInManager.SignInAsync(user, false);
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("AllCafe", "Cafe");
         }
         return BadRequest();
     }
@@ -116,39 +114,4 @@ public class AccountController : Controller
         return !result ? Json(123) : Json(model);
     }
     
-    
-    // [HttpGet]
-    // [Authorize(Roles = "user")]
-    // public async Task<IActionResult> ApplicantAccount()
-    // {
-    //     var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-    //     var model = await _accountService.ShowApplicantAccount(userId);
-    //     if (model is null) return NotFound();   
-    //     
-    //     return View(model); 
-    // }
-    
-    // [HttpGet]
-    // [Authorize(Roles = "admin")]
-    // public IActionResult AdminAccount()
-    // { 
-    //     string id = _userManager.GetUserId(User)!;
-    //     User user = _context.Users.Find(id);
-    //     var users = _context.Users.ToList();
-    //     var restaurants = _context.Restaurants.ToList();
-    //     var dishes = _context.Dishes.ToList();
-    //
-    //     AdminAccountView model = new AdminAccountView
-    //     {
-    //         User = user,
-    //         Restaurants = restaurants,
-    //         Dishes = dishes,
-    //         Users = users
-    //     };
-    //     if (ModelState.IsValid)
-    //     {
-    //         return View(model);
-    //     }
-    //     return NotFound();  
-    // }
 }

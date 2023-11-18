@@ -1,0 +1,24 @@
+@model List<Cafe>
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+
+<h2>All places</h2>
+
+<div id="restaurantsList">
+@foreach (var cafe in Model)
+{
+    <div style="max-width: 300px;"> 
+        <div id="${restaurant.id}" class="card">
+            <div class="card-body">
+                <img src="@cafe.CafePhoto" alt="RestImage" class="card-img-top" style="max-width: 100%; height: auto;">
+                <h5 class="card-title">@cafe.Name</h5>
+                <a class="details btn btn-dark" href="/Restauran/Details/?id=${restaurant.id}">Details</a>
+                <button type="button" class="btn btn-danger deleteRestaurant" data-restaurant-id="${restaurant.id}">Delete</button>
+            </div>
+        </div>
+    </div>
+}
+</div>

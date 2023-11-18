@@ -11,9 +11,9 @@ using maxutova_altynay_09.Context;
 
 namespace maxutova_altynay_09.Migrations
 {
-    [DbContext(typeof(DefaultContext))]
-    [Migration("20231118052150_DeleteRole")]
-    partial class DeleteRole
+    [DbContext(typeof(CafeContext))]
+    [Migration("20231118055000_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

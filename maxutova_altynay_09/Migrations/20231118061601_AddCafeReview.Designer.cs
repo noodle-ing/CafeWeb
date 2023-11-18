@@ -11,9 +11,9 @@ using maxutova_altynay_09.Context;
 
 namespace maxutova_altynay_09.Migrations
 {
-    [DbContext(typeof(DefaultContext))]
-    [Migration("20231117173338_UserAvatar")]
-    partial class UserAvatar
+    [DbContext(typeof(CafeContext))]
+    [Migration("20231118061601_AddCafeReview")]
+    partial class AddCafeReview
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -157,6 +157,63 @@ namespace maxutova_altynay_09.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("maxutova_altynay_09.Models.Cafe", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CafePhoto")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<double>("Rating")
+                        .HasColumnType("double precision");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Cafes");
+                });
+
+            modelBuilder.Entity("maxutova_altynay_09.Models.Review", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("CafeId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("CafePhoto")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Comment")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("NumRewiew")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CafeId");
+
+                    b.ToTable("Reviews");
+                });
+
             modelBuilder.Entity("maxutova_altynay_09.Models.User", b =>
                 {
                     b.Property<string>("Id")
@@ -202,9 +259,6 @@ namespace maxutova_altynay_09.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("boolean");
-
-                    b.Property<int>("Role")
-                        .HasColumnType("integer");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("text");
@@ -277,6 +331,18 @@ namespace maxutova_altynay_09.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("maxutova_altynay_09.Models.Review", b =>
+                {
+                    b.HasOne("maxutova_altynay_09.Models.Cafe", null)
+                        .WithMany("Reviews")
+                        .HasForeignKey("CafeId");
+                });
+
+            modelBuilder.Entity("maxutova_altynay_09.Models.Cafe", b =>
+                {
+                    b.Navigation("Reviews");
                 });
 #pragma warning restore 612, 618
         }

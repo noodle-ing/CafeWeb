@@ -1,0 +1,31 @@
+@model maxutova_altynay_09.ViewModels.Cafe.CreateCafeViewModel
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+<h2>Add new place</h2>
+
+<form method="post" asp-controller="Cafe" asp-action="CreteCafe" enctype="multipart/form-data">
+    <div asp-validation-summary="ModelOnly"></div>
+    
+    <div>
+        <label asp-for="Name"></label><br/>
+        <input asp-for="Name"/>
+    </div>
+    
+    <div>
+        <label asp-for="Description"></label><br/>
+        <input asp-for="Description"/>
+    </div>
+    <span asp-validation-for="Name"></span>
+    
+    <div class="mb-3">
+        <label for="formFile" class="form-label">Select your profile photo</label>
+        <input data-val="false" asp-for="@Model.CafePhoto.File" class="form-control" type="file" id="formFile">
+    </div>
+    
+    <div>
+        <input type="submit" value="Register" />
+    </div>
+</form>

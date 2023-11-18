@@ -7,10 +7,8 @@ namespace maxutova_altynay_09.Extensions.Maping;
 
 public static class UserMap
 {
-    private static readonly DefaultContext _context;
-
-
-
+    private static readonly CafeContext _context;
+    
     public static User CreateUserMaping(this RegistrationView? model)
     {
         var user = model == null
@@ -27,6 +25,7 @@ public static class UserMap
         else
             user!.Avatar = "/files/" + model.Login + model.Image.File.FileName;
 
+        
         return user;
     }
     
