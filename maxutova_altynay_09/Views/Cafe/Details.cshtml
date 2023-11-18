@@ -7,23 +7,154 @@
 
 <h2>@Model.Name</h2>
 
+<button class="btn-dark newRest" id="newRest">Add Review</button>
+
 <div class="d-inline-flex">
     <div class="col-6">
         @Model.Description
     </div>
-    
+
     <div class="col-6">
         <img src="@Model.CafePhoto" alt="RestImage" class="card-img-top" style="max-width: 100%; height: auto;">
     </div>
 </div>
 
 <h2>Gallery</h2>
-@foreach (var photo in @Model.Gallery)
-{
-    <img src="@photo" alt="RestImage" class="card-img-top" style="max-width: 100%; height: auto;">
-}
+<div style="display: flex; overflow-x: auto;">
+   <div id="allgalery"></div>
+</div>
 
 <h2>Rating : @Model.Rating</h2>
 
 <h2>Reviews</h2>
 
+
+<div class="modal restModel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add new Restaurants</h5>
+                <button type="button" id="close" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="newForm" enctype="multipart/form-data" name="post">
+                    <div class="form-group">
+                        <label for="restauranName">Name</label>
+                        <input asp-for="@Model.Name" type="text" class="form-control" id="restauranName" placeholder="Restaurants name">
+                    </div>
+                    <div class="mb-3">
+                        <label for="formFile" class="form-label">Select restaurant photo</label>
+                        <input data-val="false" asp-for="@Model.CafePhoto" class="form-control image" type="file" id="formFile" name="Image.File">
+                    </div>
+                    <button type="submit" id="saveRest" class="saveRest btn btn-dark">Save changes</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="commentList"></div>
+
+@section Scripts
+{
+    <script>
+    AllComment();
+    AllGallery();
+    
+       function AllComment() {
+                $.ajax({
+                    url: '@Url.Action("AllComment", "Cafe")',
+                    type: 'GET',
+                    data: {cafeId: @Model.Id},
+                    dataType: 'json',
+                    success: function (data) {
+                        console.log(data);
+                        let restaurantsContainer = $('#commentList');
+                        restaurantsContainer.empty();
+                        data.forEach(function (comment) {
+                        let htmlCard = `
+                            <div style="max-width: 300px;"> 
+                            <div id="${comment.id}" class="card">
+                            <div class="card-body">
+                            <h5 class="card-title">${comment.comment}</h5>
+                            <img src="${comment.cafePhoto}" alt="RestImage" class="card-img-top" style="max-width: 100%; height: auto;">
+                            <a class="details btn btn-dark" href="/Restauran/Details/?id=${comment.id}">Details</a>
+                            <button type="button" class="btn btn-danger deleteRestaurant">Delete</button>
+                            </div>
+                        </div>`;
+                            restaurantsContainer.append(htmlCard);
+                        });
+                    },
+                    error: function (xhr, status, error) {
+                    },
+                    complete: function () {
+                    }
+                });
+            }
+    
+
+            
+            function AllGallery() {
+                            $.ajax({
+                                url: '@Url.Action("AllGallery", "Cafe")',
+                                type: 'GET',
+                                data: {cafeId: @Model.Id},
+                                dataType: 'json',
+                                success: function (data) {
+                                    console.log(data);
+                                    let restaurantsContainer = $('#allgalery');
+                                    restaurantsContainer.empty();
+                                    data.forEach(function (comment) {
+                                    let htmlCard = `<img src="${comment.photoPath}" alt="RestImage" class="card-img-top" style="max-height: 150px; max-width: 150px; margin-right: 10px;">`;
+                                        restaurantsContainer.append(htmlCard);
+                                    });
+                                },
+                                error: function (xhr, status, error) {
+                                },
+                                complete: function () {
+                                    
+                                }
+                            });
+                        }
+                
+            
+    
+     $('.close').on('click', function ()
+                    {
+                        $('.restModel').hide();
+                    })
+                    $('.newRest').on('click', function ()
+                    {
+                        $('#restauranName').val('');
+                        $('#formFile').val('');
+                        $('.restModel').show();
+                    });
+                   $('#saveRest').on('click', function (event) {
+                       event.preventDefault();
+                   
+                       let formData = new FormData();
+                       formData.append('cafeId', @Model.Id);
+                       formData.append('comment', $('#restauranName').val());
+                       formData.append('image', $('#formFile')[0].files[0]);
+                   
+                       $.ajax({
+                           url: '@Url.Action("AddNewReview", "Cafe")',
+                           type: 'POST',
+                           data: formData,
+                           contentType: false,
+                           processData: false,
+                           success: function (data) {
+                               $('.restModel').hide();
+                               console.log(data);
+                  
+                           },
+                           complete: function () {
+                               AllComment();
+                               AllGallery();
+                           }
+                       });
+                   });   
+    </script>
+}

@@ -5,6 +5,7 @@ using maxutova_altynay_09.ViewModels.Cafe;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Net.Http.Headers;
 
 namespace maxutova_altynay_09.Controllers;
 
@@ -14,17 +15,20 @@ public class CafeController : Controller
     private readonly SignInManager<User> _signInManager;
     private readonly CafeContext _context;
     private readonly CafeService _cafeService;
+    private readonly IHostEnvironment _environment;
+    private readonly UploadFileService _fileUploadService;
+    private readonly UserManager<User> _userManager;
 
-    public CafeController(SignInManager<User> signInManager, CafeContext context, CafeService cafeService, UserManager<User> userManager)
+    public CafeController(SignInManager<User> signInManager, CafeContext context, CafeService cafeService, IHostEnvironment environment, UploadFileService fileUploadService, UserManager<User> userManager)
     {
         _signInManager = signInManager;
         _context = context;
         _cafeService = cafeService;
+        _environment = environment;
+        _fileUploadService = fileUploadService;
         _userManager = userManager;
     }
 
-    private readonly UserManager<User> _userManager;
-    
     [HttpGet]
     public IActionResult CreteCafe()
     {
@@ -87,6 +91,69 @@ public class CafeController : Controller
         }
 
         return BadRequest();
+    }
+    
+    
+    public async Task<IActionResult> AddNewReview(CreateRestView model)
+    {
+        if (model.Comment != null && model.CafeId !=null)
+        {
+            Review review = new Review
+            {
+                Comment = model.Comment,
+                CafeId = model.CafeId,
+                UserId = _userManager.GetUserId(User)
+            };
+
+            if (model.Image != null)
+            {
+                string fileName = ContentDispositionHeaderValue.Parse(model.Image.ContentDisposition).FileName
+                    .ToString().Trim();
+                string filePath = Path.Combine(_environment.ContentRootPath, "wwwroot/Files");
+                string newName = model.Comment + fileName;
+                string path = $"/files/{newName}";
+                await _fileUploadService.UploadFile(filePath, newName, model.Image);
+                review.CafePhoto = path;
+                Photo photo = new Photo
+                {
+                    PhotoPath = path,
+                    CafeId = model.CafeId
+                };
+                _context.Photos.Add(photo);
+                await _context.SaveChangesAsync();
+            }
+            else
+            {
+                string filePath = Path.Combine(_environment.ContentRootPath, "wwwroot/Files");
+                string newName = "default.png";
+                string path = $"/files/{newName}";
+                review.CafePhoto = path;
+            }
+
+            _context.Reviews.Add(review);
+            await _context.SaveChangesAsync();
+
+            return Json(review);
+        }
+        return Json(123);
+    }
+
+
+    [HttpGet]
+    public IActionResult AllComment(int cafeId)
+    {
+        List<Review> reviews = new List<Review>();
+        reviews = _context.Reviews.Where(r => r.CafeId == cafeId).ToList();
+        return Json(reviews);
+    }
+    
+    
+    [HttpGet]
+    public IActionResult AllGallery(int cafeId)
+    {
+        List<Photo> reviews = new List<Photo>();
+        reviews = _context.Photos.Where(r => r.CafeId == cafeId).ToList();
+        return Json(reviews);
     }
     
 }
