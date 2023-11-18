@@ -1,0 +1,67 @@
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model maxutova_altynay_09.ViewModels.Account.RegistrationView
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+
+<h2>New User Registration</h2>
+<h5 class="text-danger">@ViewBag.UserNameError</h5>
+<h5 class="text-danger">@ViewBag.UserEmainError</h5>
+<form method="post" asp-controller="Account" asp-action="Registration" enctype="multipart/form-data">
+    <div asp-validation-summary="ModelOnly"></div>
+
+    
+
+    
+    <div>
+        <label asp-for="Email"></label><br />
+        <input asp-for="Email" />
+    </div>
+    <span asp-validation-for="Email"></span>
+    
+    <div>
+        <label asp-for="Name"></label><br />
+        <input asp-for="Name" />
+        </div>
+        <span asp-validation-for="Name"></span>
+    
+        <div>
+            <label asp-for="Login"></label><br />
+            <input asp-for="Login" />
+        </div>
+        <span asp-validation-for="Login"></span>
+    <div>
+        <label asp-for="PhoneNum"></label><br />
+        <input asp-for="PhoneNum" />
+    </div>
+    <span asp-validation-for="PhoneNum"></span>
+    <div class="mb-3">
+        <label for="formFile" class="form-label">Select your profile photo</label>
+        <input data-val="false" asp-for="@Model.Image.File" class="form-control" type="file" id="formFile">
+    </div>
+    
+    <div>
+        <label asp-for="Password"></label><br />
+        <input asp-for="Password" />
+    </div>
+    <span asp-validation-for="Password"></span>
+
+    <div>
+        <label asp-for="ConfirmPassword"></label><br />
+        <input asp-for="ConfirmPassword" />
+    </div>
+    <span asp-validation-for="ConfirmPassword"></span>
+    
+    <div>
+        <input type="submit" value="Register" />
+    </div>
+</form>
+
+@section Scripts
+{
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

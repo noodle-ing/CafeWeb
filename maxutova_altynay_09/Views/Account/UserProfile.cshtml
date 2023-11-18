@@ -1,0 +1,105 @@
+@model User
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="row align-items-start">
+            <div class="col-md-3">
+                <img src="@Model.Avatar" alt="User Image" height="100px" width="100px" class="rounded-circle img-fluid">
+            </div>
+            <div class="col-md-9">
+                <div class="row">
+                    <div class="col-md-12">
+                        <p id="name"><strong>Company Name:</strong> @Model.UserName</p>
+                    </div>
+                    <div class="col-md-12">
+                        <p id="email"><strong>Email:</strong> @Model.Email</p>
+                    </div>
+                    <div class="col-md-12">
+                        <p id="phone"><strong>Phone Number:</strong> @Model.PhoneNumber</p>
+                    </div>
+                    <div class="col-md-12">
+                        <button class="edit-post btn btn-dark" id="edit" data-toggle="modal" data-target="#editModal">Edit Profile</button>
+                    </div>
+                </div>
+        
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal modalEdit">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Company Information</h5>
+                <button type="button" id="close" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form enctype="multipart/form-data" name="post">
+                    <div class="form-group">
+                        <label for="companyName">Company Name</label>
+                        <input type="text" class="form-control" id="companyName" value="@Model.UserName">
+                    </div>
+                    <div class="form-group">
+                        <label for="companyEmail">Email</label>
+                        <input type="email" class="form-control" id="companyEmail" value="@Model.Email">
+                    </div>
+                    <div class="form-group">
+                        <label for="companyPhone">Phone Number</label>
+                        <input type="number" class="form-control" id="companyPhone" value="@Model.PhoneNumber">
+                    </div>
+                    
+                    <input type="hidden" id="userId" valu e="@Model.Id">
+                    <button type="submit" class="btn btn-primary" id="saveButton">Save Changes</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts
+{
+    <script>
+     $("#edit").on('click', function () {
+                    $('.modalEdit').show();
+                });
+    
+                $('#close').on('click', function () {
+                    $('.modalEdit').hide();
+                });
+    
+                $("#saveButton").on('click', function (event) {
+                    event.preventDefault();
+                    let model = {
+                        id:'@Model.Id',
+                        name: $('#companyName').val(),
+                        email: $('#companyEmail').val(),
+                        phoneNumber: $('#companyPhone').val()
+                    };
+                    console.log(model);
+    
+                    $.ajax({
+                        url: '@Url.Action("EditProfiles", "Account")',
+                        type: 'POST',
+                        data: { model: model }, 
+                        dataType: 'json',
+                        success: function (data) {
+                            console.log(data);
+                            $('.modalEdit').hide();
+                            $('#email').text(`Email: ${data.email}`);
+                            $('#name').text(`Company name: ${data.name}`);
+                            $('#phone').text(`Phone number: ${data.phoneNumber}`);
+                        }
+                    });
+                });
+    </script>
+}
