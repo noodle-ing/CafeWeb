@@ -91,13 +91,12 @@
                         data.forEach(function (comment) {
                         let htmlCard = `
                             <div style="max-width: 300px;"> 
-                            <div id="${comment.id}" class="card">
+                            <div class="card">
                             <div class="card-body">
                             <h5 class="card-title">${comment.comment}</h5>
                             <p>Rate:${comment.rate}</p>
                             <img src="${comment.cafePhoto}" alt="RestImage" class="card-img-top" style="max-width: 100%; height: auto;">
-                            <a class="details btn btn-dark" href="/Restauran/Details/?id=${comment.id}">Details</a>
-                            <button type="button" class="btn btn-danger deleteRestaurant">Delete</button>
+                            <button type="button" class="btn btn-danger deleteComment" data-comment-id="${comment.id}">Delete</button>
                             </div>
                         </div>`;
                             restaurantsContainer.append(htmlCard);
@@ -194,5 +193,22 @@
                            }
                        });
                    });   
+                   
+                    $(document).on('click', '.deleteComment', function () {
+                               const commentId = $(this).data('comment-id');
+                               $.ajax({
+                                   url: '@Url.Action("DeleteComment", "Cafe")',
+                                   type: 'DELETE',
+                                   data: { id: commentId },
+                                   dataType: 'json',
+                                   success: function (data) {
+                                   },
+                                   error: function (xhr, status, error) {
+                                   },
+                                   complete: function () {
+                                    AllComment();
+                                   }
+                               });
+                           });
     </script>
 }

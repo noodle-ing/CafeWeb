@@ -93,7 +93,7 @@ public class CafeController : Controller
         return BadRequest();
     }
     
-    
+    [HttpPost]
     public async Task<IActionResult> AddNewReview(CreateRestView model)
     {
         if (model.Comment != null && model.CafeId !=null)
@@ -161,15 +161,39 @@ public class CafeController : Controller
     [HttpGet]
     public IActionResult CafeRate(int cafeId)
     {
-        List<Review> reviews = new List<Review>();
-        reviews = _context.Reviews.Where(r => r.CafeId == cafeId).ToList();
-        int SumRev = reviews.Sum(r => r.Rate);
+        List<Review> reviews = _context.Reviews.Where(r => r.CafeId == cafeId).ToList();
+        int sumRev = reviews.Sum(r => r.Rate);
         int numRev = reviews.Count();
         Cafe cafe = _context.Cafes.FirstOrDefault(c => c.Id == cafeId);
-        cafe.Rating = SumRev / numRev;
+
+        if (numRev > 0)
+        {
+            cafe.Rating = Math.Round((double)sumRev / numRev, 1); 
+        }
+        else
+        {
+            cafe.Rating = 0; 
+        }
+
         double rating = cafe.Rating;
         _context.Cafes.Update(cafe);
         _context.SaveChanges();
         return Json(rating);
+    }
+
+    [HttpDelete]
+    public IActionResult DeleteComment(int id)
+    {
+        Review? review = _context.Reviews.FirstOrDefault(r => r.Id == id);
+        if (review is not null)
+        {
+            _context.Reviews.Remove(review);
+            _context.SaveChangesAsync();
+            return Ok();
+        }
+        else
+        {
+            return NotFound($"User with ID {id} not found");
+        }
     }
 }
