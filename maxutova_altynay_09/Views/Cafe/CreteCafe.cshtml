@@ -12,13 +12,15 @@
     <div>
         <label asp-for="Name"></label><br/>
         <input asp-for="Name"/>
+        <span asp-validation-for="Name"></span>
+
     </div>
     
     <div>
         <label asp-for="Description"></label><br/>
         <input asp-for="Description"/>
+        <span asp-validation-for="Description"></span>
     </div>
-    <span asp-validation-for="Name"></span>
     
     <div class="mb-3">
         <label for="formFile" class="form-label">Select your profile photo</label>
@@ -29,3 +31,11 @@
         <input type="submit" value="Register" />
     </div>
 </form>
+
+
+@section Scripts
+{
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
