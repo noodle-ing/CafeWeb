@@ -5,4 +5,5 @@ public class CreateRestView
     public string Comment { get; set; }
     public int CafeId { get; set; }
     public IFormFile? Image { get; set; }
+    public int Rate { get; set; }
 }

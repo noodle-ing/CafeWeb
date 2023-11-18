@@ -102,7 +102,8 @@ public class CafeController : Controller
             {
                 Comment = model.Comment,
                 CafeId = model.CafeId,
-                UserId = _userManager.GetUserId(User)
+                UserId = _userManager.GetUserId(User),
+                Rate = model.Rate
             };
 
             if (model.Image != null)
@@ -155,5 +156,20 @@ public class CafeController : Controller
         reviews = _context.Photos.Where(r => r.CafeId == cafeId).ToList();
         return Json(reviews);
     }
-    
+
+
+    [HttpGet]
+    public IActionResult CafeRate(int cafeId)
+    {
+        List<Review> reviews = new List<Review>();
+        reviews = _context.Reviews.Where(r => r.CafeId == cafeId).ToList();
+        int SumRev = reviews.Sum(r => r.Rate);
+        int numRev = reviews.Count();
+        Cafe cafe = _context.Cafes.FirstOrDefault(c => c.Id == cafeId);
+        cafe.Rating = SumRev / numRev;
+        double rating = cafe.Rating;
+        _context.Cafes.Update(cafe);
+        _context.SaveChanges();
+        return Json(rating);
+    }
 }

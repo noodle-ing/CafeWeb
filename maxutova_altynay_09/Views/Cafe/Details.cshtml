@@ -7,7 +7,11 @@
 
 <h2>@Model.Name</h2>
 
-<button class="btn-dark newRest" id="newRest">Add Review</button>
+@if (User.Identity.IsAuthenticated)
+{
+    <button class="btn-dark newRest" id="newRest">Add Comment</button>
+}
+
 
 <div class="d-inline-flex">
     <div class="col-6">
@@ -21,10 +25,10 @@
 
 <h2>Gallery</h2>
 <div style="display: flex; overflow-x: auto;">
-   <div id="allgalery"></div>
+    <div id="allgalery"></div>
 </div>
 
-<h2>Rating : @Model.Rating</h2>
+<h2>Rating : <div id="cafeReiting"></div></h2>
 
 <h2>Reviews</h2>
 
@@ -33,7 +37,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Add new Restaurants</h5>
+                <h5 class="modal-title">Add comment</h5>
                 <button type="button" id="close" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -41,12 +45,22 @@
             <div class="modal-body">
                 <form id="newForm" enctype="multipart/form-data" name="post">
                     <div class="form-group">
-                        <label for="restauranName">Name</label>
+                        <label for="restauranName">Your impressions </label>
                         <input asp-for="@Model.Name" type="text" class="form-control" id="restauranName" placeholder="Restaurants name">
                     </div>
                     <div class="mb-3">
-                        <label for="formFile" class="form-label">Select restaurant photo</label>
+                        <label for="formFile" class="form-label">Select institution photo</label>
                         <input data-val="false" asp-for="@Model.CafePhoto" class="form-control image" type="file" id="formFile" name="Image.File">
+                    </div>
+                    <div>
+                        <label class="mb-2">Rate the establishment:</label>
+                        <select id="rateVal" class="form-control">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                        </select>
                     </div>
                     <button type="submit" id="saveRest" class="saveRest btn btn-dark">Save changes</button>
                 </form>
@@ -62,6 +76,7 @@
     <script>
     AllComment();
     AllGallery();
+    GetRating();
     
        function AllComment() {
                 $.ajax({
@@ -79,6 +94,7 @@
                             <div id="${comment.id}" class="card">
                             <div class="card-body">
                             <h5 class="card-title">${comment.comment}</h5>
+                            <p>Rate:${comment.rate}</p>
                             <img src="${comment.cafePhoto}" alt="RestImage" class="card-img-top" style="max-width: 100%; height: auto;">
                             <a class="details btn btn-dark" href="/Restauran/Details/?id=${comment.id}">Details</a>
                             <button type="button" class="btn btn-danger deleteRestaurant">Delete</button>
@@ -118,6 +134,27 @@
                                 }
                             });
                         }
+                        
+                    function GetRating() {
+                            $.ajax({
+                                url: '@Url.Action("CafeRate", "Cafe")',
+                                type: 'GET',
+                                data: {cafeId: @Model.Id},
+                                dataType: 'json',
+                                success: function (data) {
+                                    console.log(data);
+                                      let restaurantsContainer = $('#cafeReiting');
+                                        restaurantsContainer.empty();
+                                        let htmlCard = `<p>${data}</p>`;
+                                        restaurantsContainer.append(htmlCard);
+                                },
+                                error: function (xhr, status, error) {
+                                },
+                                complete: function () {
+                                    
+                                }
+                            });
+                        }                       
                 
             
     
@@ -136,6 +173,7 @@
                    
                        let formData = new FormData();
                        formData.append('cafeId', @Model.Id);
+                       formData.append('rate',$('#rateVal').val());
                        formData.append('comment', $('#restauranName').val());
                        formData.append('image', $('#formFile')[0].files[0]);
                    
@@ -148,11 +186,11 @@
                            success: function (data) {
                                $('.restModel').hide();
                                console.log(data);
-                  
                            },
                            complete: function () {
                                AllComment();
                                AllGallery();
+                               GetRating();
                            }
                        });
                    });   
