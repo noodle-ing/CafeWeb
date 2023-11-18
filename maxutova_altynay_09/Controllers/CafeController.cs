@@ -127,10 +127,7 @@ public class CafeController : Controller
             }
             else
             {
-                string filePath = Path.Combine(_environment.ContentRootPath, "wwwroot/Files");
-                string newName = "default.png";
-                string path = $"/files/{newName}";
-                review.CafePhoto = path;
+                review.CafePhoto = null;
             }
 
             _context.Reviews.Add(review);

@@ -99,37 +99,44 @@
     }                       
 
     
-       function AllComment() {
-                $.ajax({
-                    url: '@Url.Action("AllComment", "Cafe")',
-                    type: 'GET',
-                    data: {cafeId: @Model.Id},
-                    dataType: 'json',
-                    success: function (data) {
-                        console.log(data);
-                        let restaurantsContainer = $('#commentList');
-                        restaurantsContainer.empty();
-                        data.forEach(function (comment) {
-                        let htmlCard = `
-                            <div style="max-width: 300px;"> 
-                            <div class="card">
+function AllComment() {
+    $.ajax({
+        url: '@Url.Action("AllComment", "Cafe")',
+        type: 'GET',
+        data: { cafeId: @Model.Id },
+        dataType: 'json',
+        success: function (data) {
+            console.log(data);
+            let restaurantsContainer = $('#commentList');
+            restaurantsContainer.empty();
+            data.forEach(function (comment) {
+                let htmlCard = `
+                    <div style="max-width: 300px;"> 
+                        <div class="card">
                             <div class="card-body">
-                            <h5 class="card-title">${comment.comment}</h5>
-                            <p>Rate:${comment.rate}</p>
-                            <img src="${comment.cafePhoto}" alt="RestImage" class="card-img-top" style="max-width: 100%; height: auto;">
-                            <button type="button" class="btn btn-danger deleteComment" data-comment-id="${comment.id}">Delete</button>
+                                <h5 class="card-title">${comment.comment}</h5>
+                                <p>Rate:${comment.rate}</p>`;
+
+                if (comment.cafePhoto !== null) {
+                    htmlCard += `<img src="${comment.cafePhoto}" alt="RestImage" class="card-img-top" style="max-width: 100%; height: auto;">`;
+                }
+
+                htmlCard += `<button type="button" class="btn btn-danger deleteComment" data-comment-id="${comment.id}">Delete</button>
                             </div>
-                        </div>`;
-                            restaurantsContainer.append(htmlCard);
-                        });
-                    },
-                    error: function (xhr, status, error) {
-                    },
-                    complete: function () {
-                    }
-                });
-            }
-    
+                        </div>
+                    </div>`;
+
+                restaurantsContainer.append(htmlCard);
+            });
+        },
+        error: function (xhr, status, error) {
+      
+        },
+        complete: function () {
+     
+        }
+    });
+}
 
             function AllGallery() {
                             $.ajax({
@@ -230,6 +237,7 @@
                                    complete: function () {
                                     AllComment();
                                     IfUserFirstComment();
+                                    GetRating();
                                    }
                                });
                            });
