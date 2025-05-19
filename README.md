@@ -54,14 +54,3 @@
 
    * Open a browser and navigate to `https://localhost:5001`.
 
-## 📷 Screenshots
-
-*Add screenshots of the main pages (e.g., home, cafe details, feedback form).*
-
-## 🤝 Contributing
-
-Contributions are welcome! Please open an issue or submit a pull request for enhancements or bug fixes.
-
-## 📄 License
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
